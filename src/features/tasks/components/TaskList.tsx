@@ -1,10 +1,23 @@
-import { EmptyState } from "@/components/feedback/EmptyState";
-import type { Task } from "../types";
+import type { Task } from "../types/task.types";
 import { TaskCard } from "./TaskCard";
 
-export function TaskList({ tasks }: { tasks: Task[] }) {
+type TaskListProps = {
+  tasks: Task[];
+  isLoading?: boolean;
+};
+
+export function TaskList({ tasks, isLoading = false }: TaskListProps) {
+  if (isLoading) {
+    return <p className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600">Loading tasks...</p>;
+  }
+
   if (tasks.length === 0) {
-    return <EmptyState title="No tasks yet" description="Create your first Donna task from the API." />;
+    return (
+      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center">
+        <h2 className="text-sm font-medium text-slate-900">No tasks yet</h2>
+        <p className="mt-1 text-sm text-slate-600">Capture your first request and Donna will keep it here.</p>
+      </div>
+    );
   }
 
   return (
