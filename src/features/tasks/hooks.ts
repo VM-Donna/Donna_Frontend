@@ -1,11 +1,2 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { getTasks } from "./api";
-
-export function useTasks() {
-  return useQuery({
-    queryKey: ["tasks"],
-    queryFn: getTasks
-  });
-}
+export { useCreateTask } from "./hooks/useCreateTask";
+export { tasksQueryKey, useTasks } from "./hooks/useTasks";

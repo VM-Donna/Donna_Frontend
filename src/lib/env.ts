@@ -1,9 +1,11 @@
-import { z } from "zod";
+export const env = {
+  get apiBaseUrl() {
+    const value = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const envSchema = z.object({
-  NEXT_PUBLIC_API_BASE_URL: z.string().url().default("http://localhost:8000")
-});
+    if (!value) {
+      throw new Error("Missing environment variable: NEXT_PUBLIC_API_BASE_URL");
+    }
 
-export const env = envSchema.parse({
-  NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL
-});
+    return value;
+  }
+};

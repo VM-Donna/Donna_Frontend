@@ -1,25 +1,42 @@
 "use client";
 
-import { ErrorState } from "@/components/feedback/ErrorState";
-import { LoadingState } from "@/components/feedback/LoadingState";
-import { useTasks } from "../hooks";
+import { useCreateTask, useTasks } from "../hooks";
+import { TaskComposer } from "./TaskComposer";
 import { TaskList } from "./TaskList";
 
 export function TasksView() {
-  const { data, isLoading, error } = useTasks();
+  const { data: tasks = [], isLoading, error } = useTasks();
+  const createTaskMutation = useCreateTask();
 
   return (
-    <div>
+    <div className="mx-auto max-w-3xl">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold">Tasks</h1>
-        <p className="mt-2 text-slate-600">
-          This page reads from the backend via the central API client.
-        </p>
+        <p className="mt-2 text-slate-600">Capture requests and keep Donna&apos;s task list current.</p>
       </div>
 
-      {isLoading ? <LoadingState label="Loading tasks..." /> : null}
-      {error ? <ErrorState message="Could not load tasks. Is the backend running?" /> : null}
-      {data ? <TaskList tasks={data.items} /> : null}
+      <TaskComposer
+        isSubmitting={createTaskMutation.isPending}
+        onSubmit={async (input) => {
+          await createTaskMutation.mutateAsync(input);
+        }}
+      />
+
+      {error ? (
+        <div role="alert" className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          Could not load tasks. Is the backend running?
+        </div>
+      ) : null}
+
+      {createTaskMutation.error ? (
+        <div role="alert" className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          Could not create task. {createTaskMutation.error.message}
+        </div>
+      ) : null}
+
+      <div className="mt-8">
+        <TaskList tasks={tasks} isLoading={isLoading} />
+      </div>
     </div>
   );
 }
