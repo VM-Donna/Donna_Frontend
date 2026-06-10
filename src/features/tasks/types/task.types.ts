@@ -24,6 +24,10 @@ export type TaskApiResponse = {
   description?: string;
   status: TaskStatus;
   source: TaskSource;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TaskListApiResponse = {
+  items: TaskApiResponse[];
 };
