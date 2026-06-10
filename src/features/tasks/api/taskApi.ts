@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import type { CreateTaskInput, Task, TaskApiResponse } from "../types/task.types";
+import type { CreateTaskInput, Task, TaskApiResponse, TaskListApiResponse } from "../types/task.types";
 
 function mapTaskFromApi(task: TaskApiResponse): Task {
   return {
@@ -8,14 +8,14 @@ function mapTaskFromApi(task: TaskApiResponse): Task {
     description: task.description,
     status: task.status,
     source: task.source,
-    createdAt: task.created_at,
-    updatedAt: task.updated_at
+    createdAt: task.createdAt,
+    updatedAt: task.updatedAt
   };
 }
 
 export async function getTasks(): Promise<Task[]> {
-  const tasks = await apiClient<TaskApiResponse[]>("/api/tasks");
-  return tasks.map(mapTaskFromApi);
+  const response = await apiClient<TaskListApiResponse>("/api/tasks");
+  return response.items.map(mapTaskFromApi);
 }
 
 export async function createTask(input: CreateTaskInput): Promise<Task> {
