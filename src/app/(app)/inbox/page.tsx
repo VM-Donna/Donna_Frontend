@@ -1,8 +1,13 @@
+import { Inbox } from "lucide-react";
+import { PlaceholderPage } from "@/components/layout/PlaceholderPage";
+
 export default function InboxPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold">Inbox</h1>
-      <p className="mt-2 text-slate-600">Email triage surface placeholder.</p>
-    </div>
+    <PlaceholderPage
+      eyebrow="Communication"
+      title="Inbox"
+      description="A triage surface for important messages, follow-ups, and draft replies pending approval."
+      icon={Inbox}
+    />
   );
 }

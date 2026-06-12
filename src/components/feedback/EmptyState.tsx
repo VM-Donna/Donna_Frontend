@@ -1,8 +1,8 @@
 export function EmptyState({ title, description }: { title: string; description?: string }) {
   return (
-    <div className="rounded-2xl border border-dashed bg-white p-8 text-center">
-      <p className="font-medium">{title}</p>
-      {description ? <p className="mt-1 text-sm text-slate-500">{description}</p> : null}
+    <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-[var(--shadow-soft)]">
+      <p className="font-semibold text-[var(--text-primary)]">{title}</p>
+      {description ? <p className="mt-1 text-sm text-[var(--text-secondary)]">{description}</p> : null}
     </div>
   );
 }
