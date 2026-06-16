@@ -11,9 +11,11 @@ export type CalendarEvent = {
 export type DashboardTask = {
   id: string;
   title: string;
-  status: "pending" | "in_progress" | "completed";
-  priority?: "low" | "medium" | "high";
-  dueTime?: string;
+  description?: string;
+  status: "pending" | "in_progress" | "blocked" | "completed";
+  important: boolean;
+  urgent: boolean;
+  dueAt?: string;
 };
 
 export type EmailSummary = {
@@ -28,8 +30,10 @@ export type EmailSummary = {
 export type Habit = {
   id: string;
   name: string;
+  description?: string;
+  frequency: "daily" | "weekly";
   completed: boolean;
-  streak?: number;
+  streak: number;
 };
 
 export type DashboardData = {

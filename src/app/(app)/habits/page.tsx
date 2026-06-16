@@ -1,13 +1,5 @@
-import { Target } from "lucide-react";
-import { PlaceholderPage } from "@/components/layout/PlaceholderPage";
+import { HabitsView } from "@/features/habits/components/HabitsView";
 
 export default function HabitsPage() {
-  return (
-    <PlaceholderPage
-      eyebrow="Accountability"
-      title="Habits"
-      description="Track daily habits, streaks, and the small behaviors that keep the week moving."
-      icon={Target}
-    />
-  );
+  return <HabitsView />;
 }

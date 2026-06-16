@@ -1,5 +1,11 @@
 import { apiClient } from "@/lib/apiClient";
-import type { CreateTaskInput, Task, TaskApiResponse, TaskListApiResponse } from "../types/task.types";
+import type {
+  CreateTaskInput,
+  Task,
+  TaskApiResponse,
+  TaskListApiResponse,
+  UpdateTaskInput
+} from "../types/task.types";
 
 function mapTaskFromApi(task: TaskApiResponse): Task {
   return {
@@ -8,6 +14,9 @@ function mapTaskFromApi(task: TaskApiResponse): Task {
     description: task.description,
     status: task.status,
     source: task.source,
+    important: task.important,
+    urgent: task.urgent,
+    dueAt: task.dueAt,
     createdAt: task.createdAt,
     updatedAt: task.updatedAt
   };
@@ -21,6 +30,15 @@ export async function getTasks(): Promise<Task[]> {
 export async function createTask(input: CreateTaskInput): Promise<Task> {
   const task = await apiClient<TaskApiResponse>("/api/tasks", {
     method: "POST",
+    body: input
+  });
+
+  return mapTaskFromApi(task);
+}
+
+export async function updateTask(taskId: string, input: UpdateTaskInput): Promise<Task> {
+  const task = await apiClient<TaskApiResponse>(`/api/tasks/${taskId}`, {
+    method: "PATCH",
     body: input
   });
 

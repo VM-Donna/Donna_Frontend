@@ -32,4 +32,9 @@ src/generated/    Generated API client/types from backend OpenAPI
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
-The MVP task capture page calls `GET /api/tasks` and `POST /api/tasks` on that backend URL.
+The dashboard and product pages call the DB-backed task and habit APIs:
+
+- `GET /api/tasks`, `POST /api/tasks`, and `PATCH /api/tasks/{id}`
+- `GET /api/habits`, `POST /api/habits`, `PATCH /api/habits/{id}`, and `PATCH /api/habits/{id}/completion`
+
+Calendar and email dashboard panels still use mock data until backend integrations are ready.

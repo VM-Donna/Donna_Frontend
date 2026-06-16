@@ -17,14 +17,20 @@ async function getErrorMessage(response: Response): Promise<string> {
 }
 
 export async function apiClient<T>(path: string, options: ApiClientOptions = {}): Promise<T> {
-  const response = await fetch(`${env.apiBaseUrl}${path}`, {
-    method: options.method ?? "GET",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    cache: "no-store"
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${env.apiBaseUrl}${path}`, {
+      method: options.method ?? "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      cache: "no-store"
+    });
+  } catch {
+    throw new Error(`Could not reach Donna API at ${env.apiBaseUrl}. Is the backend running?`);
+  }
 
   if (!response.ok) {
     throw new Error(await getErrorMessage(response));

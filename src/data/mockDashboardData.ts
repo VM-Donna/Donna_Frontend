@@ -79,20 +79,22 @@ export function createMockDashboardData(baseDate = new Date()): DashboardData {
         id: "1",
         title: "Call Mark",
         status: "pending",
-        priority: "medium",
-        dueTime: "10:00 AM"
+        important: true,
+        urgent: false
       },
       {
         id: "2",
         title: "Book dentist appointment",
         status: "in_progress",
-        priority: "high"
+        important: true,
+        urgent: true
       },
       {
         id: "3",
         title: "Review insurance renewal",
         status: "completed",
-        priority: "low"
+        important: false,
+        urgent: false
       }
     ],
     emails: [
@@ -124,18 +126,21 @@ export function createMockDashboardData(baseDate = new Date()): DashboardData {
       {
         id: "1",
         name: "Morning workout",
+        frequency: "daily",
         completed: true,
         streak: 5
       },
       {
         id: "2",
         name: "Read 20 minutes",
+        frequency: "daily",
         completed: false,
         streak: 12
       },
       {
         id: "3",
         name: "Plan tomorrow",
+        frequency: "daily",
         completed: false,
         streak: 3
       }
