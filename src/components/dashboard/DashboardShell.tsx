@@ -2,7 +2,20 @@
 
 import { useMemo, useState } from "react";
 import { CalendarCheck2, CheckCircle2, Mail, X } from "lucide-react";
-import { createMockDashboardData } from "@/data/mockDashboardData";
+import { createMockDashboardData, formatDateKey } from "@/data/mockDashboardData";
+import { HabitComposer } from "@/features/habits/components/HabitComposer";
+import { HabitEditorDialog } from "@/features/habits/components/HabitEditorDialog";
+import {
+  useCreateHabit,
+  useHabits,
+  useUpdateHabit,
+  useUpdateHabitCompletion
+} from "@/features/habits/hooks";
+import type { Habit } from "@/features/habits/types";
+import { TaskComposer } from "@/features/tasks/components/TaskComposer";
+import { TaskEditorDialog } from "@/features/tasks/components/TaskEditorDialog";
+import { useCreateTask, useTasks, useUpdateTask } from "@/features/tasks/hooks";
+import type { Task } from "@/features/tasks/types";
 import { DashboardHeader } from "./DashboardHeader";
 import { EmailSummaryCard } from "./EmailSummaryCard";
 import { FloatingCreateButton } from "./FloatingCreateButton";
@@ -12,26 +25,21 @@ import { TodayTasksCard } from "./TodayTasksCard";
 
 type CreateAction = "task" | "habit";
 
-function getModalCopy(action: CreateAction): { title: string; body: string } {
-  if (action === "task") {
-    return {
-      title: "Create task coming soon",
-      body: "Donna will use this space for quick task capture once the dashboard connects to the task workflow."
-    };
-  }
-
-  return {
-    title: "Create habit coming soon",
-    body: "Donna will use this space for habit setup once the habit workflow is ready."
-  };
-}
-
 export function DashboardShell() {
   const [today] = useState(() => new Date());
   const [activeAction, setActiveAction] = useState<CreateAction | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
   const dashboardData = useMemo(() => createMockDashboardData(today), [today]);
-  const modalCopy = activeAction ? getModalCopy(activeAction) : null;
-  const openTasks = dashboardData.tasks.filter((task) => task.status !== "completed").length;
+  const todayKey = useMemo(() => formatDateKey(today), [today]);
+  const { data: tasks = [] } = useTasks();
+  const { data: habits = [] } = useHabits(todayKey);
+  const createTaskMutation = useCreateTask();
+  const updateTaskMutation = useUpdateTask();
+  const createHabitMutation = useCreateHabit(todayKey);
+  const updateHabitMutation = useUpdateHabit(todayKey);
+  const updateCompletionMutation = useUpdateHabitCompletion(todayKey);
+  const openTasks = tasks.filter((task) => task.status !== "completed").length;
   const unreadEmails = dashboardData.emails.filter((email) => email.isUnread).length;
 
   return (
@@ -54,8 +62,12 @@ export function DashboardShell() {
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">{item.label}</p>
-                    <p className="mt-2 text-3xl font-semibold text-[var(--text-primary)]">{item.value}</p>
+                    <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 text-3xl font-semibold text-[var(--text-primary)]">
+                      {item.value}
+                    </p>
                   </div>
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
                     <Icon aria-hidden="true" className="h-5 w-5" />
@@ -70,23 +82,39 @@ export function DashboardShell() {
           <ThreeDayCalendar baseDate={today} events={dashboardData.events} />
 
           <aside className="space-y-5">
-            <TodayTasksCard tasks={dashboardData.tasks} />
+            <TodayTasksCard
+              tasks={tasks}
+              onOpenTask={setSelectedTask}
+              onCompleteTask={async (task) => {
+                await updateTaskMutation.mutateAsync({
+                  taskId: task.id,
+                  input: { status: "completed" }
+                });
+              }}
+              updatingTaskId={updateTaskMutation.variables?.taskId}
+            />
             <EmailSummaryCard emails={dashboardData.emails} />
-            <HabitsCard habits={dashboardData.habits} />
+            <HabitsCard
+              habits={habits}
+              onOpenHabit={setSelectedHabit}
+              onToggleHabit={async (habit) => {
+                await updateCompletionMutation.mutateAsync({
+                  habitId: habit.id,
+                  input: { date: todayKey, completed: !habit.completed }
+                });
+              }}
+              updatingHabitId={updateCompletionMutation.variables?.habitId}
+            />
           </aside>
         </main>
       </div>
 
       <FloatingCreateButton onSelect={setActiveAction} />
 
-      {modalCopy ? (
+      {activeAction ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/35 p-4 backdrop-blur-sm sm:items-center">
-          <section className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-2xl shadow-slate-950/20">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--text-primary)]">{modalCopy.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{modalCopy.body}</p>
-              </div>
+          <div className="relative w-full max-w-xl">
+            <div className="absolute right-3 top-3 z-10">
               <button
                 type="button"
                 aria-label="Close modal"
@@ -96,9 +124,46 @@ export function DashboardShell() {
                 <X aria-hidden="true" className="h-4 w-4" />
               </button>
             </div>
-          </section>
+            {activeAction === "task" ? (
+              <TaskComposer
+                isSubmitting={createTaskMutation.isPending}
+                onSubmit={async (input) => {
+                  await createTaskMutation.mutateAsync(input);
+                  setActiveAction(null);
+                }}
+              />
+            ) : (
+              <HabitComposer
+                isSubmitting={createHabitMutation.isPending}
+                onSubmit={async (input) => {
+                  await createHabitMutation.mutateAsync(input);
+                  setActiveAction(null);
+                }}
+              />
+            )}
+          </div>
         </div>
       ) : null}
+
+      <TaskEditorDialog
+        task={selectedTask}
+        isSubmitting={updateTaskMutation.isPending}
+        onClose={() => setSelectedTask(null)}
+        onSubmit={async (taskId, input) => {
+          await updateTaskMutation.mutateAsync({ taskId, input });
+          setSelectedTask(null);
+        }}
+      />
+
+      <HabitEditorDialog
+        habit={selectedHabit}
+        isSubmitting={updateHabitMutation.isPending}
+        onClose={() => setSelectedHabit(null)}
+        onSubmit={async (habitId, input) => {
+          await updateHabitMutation.mutateAsync({ habitId, input });
+          setSelectedHabit(null);
+        }}
+      />
     </div>
   );
 }

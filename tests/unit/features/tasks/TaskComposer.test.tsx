@@ -32,7 +32,10 @@ describe("TaskComposer", () => {
       expect(onSubmit).toHaveBeenCalledWith({
         title: "Book dentist appointment",
         description: "Find a dentist near me",
-        source: "manual"
+        source: "manual",
+        important: false,
+        urgent: false,
+        dueAt: undefined
       });
     });
   });

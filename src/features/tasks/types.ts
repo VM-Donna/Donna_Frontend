@@ -3,5 +3,6 @@ export type {
   Task,
   TaskApiResponse,
   TaskSource,
-  TaskStatus
+  TaskStatus,
+  UpdateTaskInput
 } from "./types/task.types";

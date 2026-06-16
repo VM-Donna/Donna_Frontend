@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { Check, Flame, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Habit } from "@/types/dashboard";
+import type { Habit } from "@/features/habits/types";
 
 type HabitsCardProps = {
   habits: Habit[];
+  onOpenHabit?: (habit: Habit) => void;
+  onToggleHabit?: (habit: Habit) => void;
+  updatingHabitId?: string;
 };
 
-export function HabitsCard({ habits }: HabitsCardProps) {
-  const [dailyHabits, setDailyHabits] = useState(habits);
-  const completedCount = dailyHabits.filter((habit) => habit.completed).length;
-
-  function toggleHabit(habitId: string) {
-    setDailyHabits((currentHabits) =>
-      currentHabits.map((habit) => (habit.id === habitId ? { ...habit, completed: !habit.completed } : habit))
-    );
-  }
+export function HabitsCard({
+  habits,
+  onOpenHabit,
+  onToggleHabit,
+  updatingHabitId
+}: HabitsCardProps) {
+  const completedCount = habits.filter((habit) => habit.completed).length;
 
   return (
     <section className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
@@ -25,7 +25,7 @@ export function HabitsCard({ habits }: HabitsCardProps) {
         <div>
           <h2 className="text-base font-semibold text-[var(--text-primary)]">Daily Habits</h2>
           <p className="mt-1 text-xs text-[var(--text-secondary)]">
-            {completedCount} of {dailyHabits.length} complete
+            {completedCount} of {habits.length} complete
           </p>
         </div>
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
@@ -34,11 +34,23 @@ export function HabitsCard({ habits }: HabitsCardProps) {
       </div>
 
       <div className="mt-4 space-y-3">
-        {dailyHabits.map((habit) => (
+        {habits.map((habit) => (
           <article
             key={habit.id}
+            role={onOpenHabit ? "button" : undefined}
+            tabIndex={onOpenHabit ? 0 : undefined}
+            onClick={() => onOpenHabit?.(habit)}
+            onKeyDown={(event) => {
+              if (!onOpenHabit) {
+                return;
+              }
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onOpenHabit(habit);
+              }
+            }}
             className={cn(
-              "flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-3 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)]",
+              "flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-3 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
               habit.completed && "border-[var(--accent)] bg-[var(--accent-soft)]"
             )}
           >
@@ -47,10 +59,15 @@ export function HabitsCard({ habits }: HabitsCardProps) {
               role="checkbox"
               aria-checked={habit.completed}
               aria-label={`Toggle ${habit.name}`}
-              onClick={() => toggleHabit(habit.id)}
+              disabled={updatingHabitId === habit.id}
+              onClick={(event) => {
+                event.stopPropagation();
+                onToggleHabit?.(habit);
+              }}
               className={cn(
-                "flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface)] text-transparent transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]",
-                habit.completed && "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]"
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface)] text-transparent transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50",
+                habit.completed &&
+                  "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-contrast)]"
               )}
             >
               <Check aria-hidden="true" className="h-4 w-4" />

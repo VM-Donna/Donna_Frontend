@@ -7,9 +7,18 @@ import { TaskCard } from "./TaskCard";
 type TaskListProps = {
   tasks: Task[];
   isLoading?: boolean;
+  onOpenTask?: (task: Task) => void;
+  onCompleteTask?: (task: Task) => void;
+  updatingTaskId?: string;
 };
 
-export function TaskList({ tasks, isLoading = false }: TaskListProps) {
+export function TaskList({
+  tasks,
+  isLoading = false,
+  onOpenTask,
+  onCompleteTask,
+  updatingTaskId
+}: TaskListProps) {
   if (isLoading) {
     return (
       <Card className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
@@ -32,7 +41,13 @@ export function TaskList({ tasks, isLoading = false }: TaskListProps) {
   return (
     <div className="space-y-3">
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          onOpen={onOpenTask}
+          onStatusChange={onCompleteTask}
+          isUpdating={updatingTaskId === task.id}
+        />
       ))}
     </div>
   );

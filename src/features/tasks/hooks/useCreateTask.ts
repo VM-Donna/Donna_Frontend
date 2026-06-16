@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../api/taskApi";
-import type { CreateTaskInput, Task } from "../types/task.types";
+import type { CreateTaskInput } from "../types/task.types";
 import { tasksQueryKey } from "./useTasks";
 
 export function useCreateTask() {
@@ -10,10 +10,8 @@ export function useCreateTask() {
 
   return useMutation({
     mutationFn: (input: CreateTaskInput) => createTask(input),
-    onSuccess: (task) => {
-      queryClient.setQueryData<Task[]>(tasksQueryKey, (currentTasks) => {
-        return currentTasks ? [task, ...currentTasks] : [task];
-      });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: tasksQueryKey });
     }
   });
 }

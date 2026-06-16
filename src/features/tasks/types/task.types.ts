@@ -8,6 +8,9 @@ export type Task = {
   description?: string;
   status: TaskStatus;
   source: TaskSource;
+  important: boolean;
+  urgent: boolean;
+  dueAt?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -16,6 +19,18 @@ export type CreateTaskInput = {
   title: string;
   description?: string;
   source: TaskSource;
+  important: boolean;
+  urgent: boolean;
+  dueAt?: string;
+};
+
+export type UpdateTaskInput = {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  important?: boolean;
+  urgent?: boolean;
+  dueAt?: string | null;
 };
 
 export type TaskApiResponse = {
@@ -24,6 +39,9 @@ export type TaskApiResponse = {
   description?: string;
   status: TaskStatus;
   source: TaskSource;
+  important: boolean;
+  urgent: boolean;
+  dueAt?: string;
   createdAt: string;
   updatedAt: string;
 };
