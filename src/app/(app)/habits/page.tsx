@@ -1,12 +1,13 @@
-export default function HabitsPage() {
-  return <Placeholder title="Habits" />;
-}
+import { Target } from "lucide-react";
+import { PlaceholderPage } from "@/components/layout/PlaceholderPage";
 
-function Placeholder({ title }: { title: string }) {
+export default function HabitsPage() {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      <p className="mt-2 text-slate-600">Production surface placeholder.</p>
-    </div>
+    <PlaceholderPage
+      eyebrow="Accountability"
+      title="Habits"
+      description="Track daily habits, streaks, and the small behaviors that keep the week moving."
+      icon={Target}
+    />
   );
 }

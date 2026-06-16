@@ -1,3 +1,6 @@
+import { CheckSquare, LoaderCircle } from "lucide-react";
+import { EmptyPanel } from "@/components/ui/EmptyPanel";
+import { Card } from "@/components/ui/Card";
 import type { Task } from "../types/task.types";
 import { TaskCard } from "./TaskCard";
 
@@ -8,15 +11,21 @@ type TaskListProps = {
 
 export function TaskList({ tasks, isLoading = false }: TaskListProps) {
   if (isLoading) {
-    return <p className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600">Loading tasks...</p>;
+    return (
+      <Card className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
+        <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin text-[var(--accent)]" />
+        Loading tasks...
+      </Card>
+    );
   }
 
   if (tasks.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center">
-        <h2 className="text-sm font-medium text-slate-900">No tasks yet</h2>
-        <p className="mt-1 text-sm text-slate-600">Capture your first request and Donna will keep it here.</p>
-      </div>
+      <EmptyPanel
+        icon={<CheckSquare aria-hidden="true" className="h-5 w-5" />}
+        title="No tasks yet"
+        description="Capture your first request and Donna will keep it here."
+      />
     );
   }
 

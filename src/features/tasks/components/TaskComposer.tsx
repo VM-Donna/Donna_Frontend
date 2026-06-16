@@ -1,7 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { createTaskSchema } from "../schemas/task.schema";
@@ -42,46 +44,54 @@ export function TaskComposer({ onSubmit, isSubmitting }: TaskComposerProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="task-title" className="text-sm font-medium text-slate-700">
-            Request
-          </label>
-          <Input
-            id="task-title"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="Book dentist appointment"
-            disabled={isSubmitting}
-            className="mt-1"
-          />
+    <Card className="p-0">
+      <form onSubmit={handleSubmit} className="p-5">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Capture a request</h2>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">Add the raw task now. Donna can prioritize it later.</p>
         </div>
 
-        <div>
-          <label htmlFor="task-description" className="text-sm font-medium text-slate-700">
-            Details
-          </label>
-          <Textarea
-            id="task-description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            placeholder="Find a dentist near me and book something next week"
-            disabled={isSubmitting}
-            className="mt-1"
-          />
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="task-title" className="text-sm font-semibold text-[var(--text-primary)]">
+              Request
+            </label>
+            <Input
+              id="task-title"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Book dentist appointment"
+              disabled={isSubmitting}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="task-description" className="text-sm font-semibold text-[var(--text-primary)]">
+              Details
+            </label>
+            <Textarea
+              id="task-description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Find a dentist near me and book something next week"
+              disabled={isSubmitting}
+              className="mt-1"
+            />
+          </div>
+
+          {validationError ? (
+            <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2 text-sm font-medium text-[var(--danger)]">
+              {validationError}
+            </p>
+          ) : null}
+
+          <Button type="submit" disabled={isSubmitting}>
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            {isSubmitting ? "Submitting..." : "Add task"}
+          </Button>
         </div>
-
-        {validationError ? (
-          <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-            {validationError}
-          </p>
-        ) : null}
-
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Add task"}
-        </Button>
-      </div>
-    </form>
+      </form>
+    </Card>
   );
 }
