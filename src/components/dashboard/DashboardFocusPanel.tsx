@@ -28,7 +28,7 @@ export function DashboardFocusPanel({ data }: DashboardFocusPanelProps) {
   const [activeTab, setActiveTab] = useState<FocusTab>("tasks");
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-soft)]">
+    <section className="flex min-h-[520px] flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-soft)]">
       <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="Dashboard focus panel">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -53,7 +53,7 @@ export function DashboardFocusPanel({ data }: DashboardFocusPanelProps) {
         })}
       </div>
 
-      <div className="mt-3 [&>section]:border-0 [&>section]:bg-transparent [&>section]:p-1 [&>section]:shadow-none">
+      <div className="mt-3 flex-1 [&>section]:border-0 [&>section]:bg-transparent [&>section]:p-1 [&>section]:shadow-none">
         {activeTab === "tasks" ? <TodayTasksCard tasks={data.tasks} /> : null}
         {activeTab === "email" ? <EmailSummaryCard emails={data.emails} /> : null}
         {activeTab === "habits" ? <HabitsCard habits={data.habits} /> : null}

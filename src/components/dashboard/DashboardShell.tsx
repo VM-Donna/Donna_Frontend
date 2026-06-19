@@ -3,10 +3,10 @@
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { createMockDashboardData } from "@/data/mockDashboardData";
+import { DashboardBriefPanel } from "./DashboardBriefPanel";
 import { DashboardFocusPanel } from "./DashboardFocusPanel";
 import { DashboardHeader } from "./DashboardHeader";
 import { FloatingCreateButton } from "./FloatingCreateButton";
-import { ThreeDayCalendar } from "./ThreeDayCalendar";
 
 type CreateAction = "task" | "habit";
 
@@ -36,7 +36,6 @@ export function DashboardShell() {
     <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] transition-colors duration-300">
       <div className="mx-auto max-w-[1600px] px-4 pb-24 sm:px-6 lg:px-8">
         <DashboardHeader
-          now={today}
           stats={[
             { label: "Events scheduled", value: dashboardData.events.length },
             { label: "Open priorities", value: openTasks },
@@ -44,8 +43,8 @@ export function DashboardShell() {
           ]}
         />
 
-        <main className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
-          <ThreeDayCalendar baseDate={today} events={dashboardData.events} />
+        <main className="grid items-stretch gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+          <DashboardBriefPanel data={dashboardData} />
           <DashboardFocusPanel data={dashboardData} />
         </main>
       </div>
