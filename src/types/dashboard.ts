@@ -41,4 +41,4 @@ export type DashboardData = {
 
 export type ThemeMode = "light" | "dark";
 
-export type AccentColor = "navy" | "indigo" | "emerald" | "violet" | "rose" | "amber";
+export type AccentColor = "teal" | "navy" | "indigo" | "emerald" | "violet" | "rose" | "amber";

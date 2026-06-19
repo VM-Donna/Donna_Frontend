@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalendarCheck2, CheckCircle2, Mail, X } from "lucide-react";
+import { X } from "lucide-react";
 import { createMockDashboardData } from "@/data/mockDashboardData";
 import { DashboardHeader } from "./DashboardHeader";
 import { EmailSummaryCard } from "./EmailSummaryCard";
@@ -37,34 +37,14 @@ export function DashboardShell() {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] transition-colors duration-300">
       <div className="mx-auto max-w-[1600px] px-4 pb-24 sm:px-6 lg:px-8">
-        <DashboardHeader now={today} />
-
-        <section className="mb-5 grid gap-3 md:grid-cols-3" aria-label="Executive summary">
-          {[
-            { label: "Events scheduled", value: dashboardData.events.length, icon: CalendarCheck2 },
-            { label: "Open priorities", value: openTasks, icon: CheckCircle2 },
-            { label: "Unread emails", value: unreadEmails, icon: Mail }
-          ].map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <div
-                key={item.label}
-                className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">{item.label}</p>
-                    <p className="mt-2 text-3xl font-semibold text-[var(--text-primary)]">{item.value}</p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
-                    <Icon aria-hidden="true" className="h-5 w-5" />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </section>
+        <DashboardHeader
+          now={today}
+          stats={[
+            { label: "Events scheduled", value: dashboardData.events.length },
+            { label: "Open priorities", value: openTasks },
+            { label: "Unread emails", value: unreadEmails }
+          ]}
+        />
 
         <main className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
           <ThreeDayCalendar baseDate={today} events={dashboardData.events} />
@@ -84,8 +64,12 @@ export function DashboardShell() {
           <section className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-2xl shadow-slate-950/20">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-semibold text-[var(--text-primary)]">{modalCopy.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{modalCopy.body}</p>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+                  {modalCopy.title}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  {modalCopy.body}
+                </p>
               </div>
               <button
                 type="button"

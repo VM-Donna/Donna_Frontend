@@ -8,7 +8,7 @@ export type ThemeSettings = {
 
 export const defaultThemeSettings: ThemeSettings = {
   mode: "light",
-  accent: "navy"
+  accent: "teal"
 };
 
 export const themeStorageKeys = {

@@ -14,6 +14,17 @@ export type AccentDefinition = {
 
 export const accentOptions: AccentDefinition[] = [
   {
+    id: "teal",
+    label: "Teal",
+    value: "#0f766e",
+    soft: "rgba(15, 118, 110, 0.14)",
+    contrast: "#ffffff",
+    ring: "rgba(15, 118, 110, 0.28)",
+    darkValue: "#2dd4bf",
+    darkSoft: "rgba(45, 212, 191, 0.16)",
+    darkRing: "rgba(45, 212, 191, 0.32)"
+  },
+  {
     id: "navy",
     label: "Navy",
     value: "#1e3a8a",
@@ -85,7 +96,10 @@ export function getAccentDefinition(accent: AccentColor): AccentDefinition {
   return accentOptions.find((option) => option.id === accent) ?? accentOptions[0];
 }
 
-export function getAccentCssVariables(accent: AccentColor, mode: ThemeMode): Record<string, string> {
+export function getAccentCssVariables(
+  accent: AccentColor,
+  mode: ThemeMode
+): Record<string, string> {
   const definition = getAccentDefinition(accent);
   const isDark = mode === "dark";
 
