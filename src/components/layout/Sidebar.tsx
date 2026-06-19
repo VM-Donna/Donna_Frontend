@@ -10,9 +10,9 @@ import {
   MessageSquare,
   Settings,
   ShieldCheck,
-  Sparkles,
   Target
 } from "lucide-react";
+import { DonnaLogo, DonnaMark } from "@/components/brand/DonnaLogo";
 import { cn } from "@/lib/utils";
 
 export const navItems = [
@@ -32,14 +32,8 @@ export function Sidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)] lg:block">
       <div className="flex h-full flex-col">
-        <Link href="/" className="flex items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-[var(--surface-muted)]">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--accent)] text-[var(--accent-contrast)] shadow-sm shadow-[var(--accent-ring)]">
-            <Sparkles aria-hidden="true" className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-lg font-semibold text-[var(--text-primary)]">Donna</p>
-            <p className="text-xs font-medium text-[var(--text-secondary)]">Executive assistant</p>
-          </div>
+        <Link href="/" className="rounded-lg px-2 py-2 transition hover:bg-[var(--surface-muted)]">
+          <DonnaLogo markClassName="h-11 w-11" />
         </Link>
 
         <nav className="mt-8 space-y-1" aria-label="Primary navigation">
@@ -64,7 +58,9 @@ export function Sidebar() {
         </nav>
 
         <div className="mt-auto rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
-          <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">Status</p>
+          <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">
+            Status
+          </p>
           <p className="mt-2 text-sm font-semibold text-[var(--text-primary)]">Foundation mode</p>
           <p className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">
             Task flow is live. Calendar, inbox, and approvals are staged for integration.
@@ -81,12 +77,12 @@ export function MobileNav() {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--surface)]/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:hidden">
       <Link href="/" className="mb-3 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent)] text-[var(--accent-contrast)]">
-          <Sparkles aria-hidden="true" className="h-4 w-4" />
-        </div>
+        <DonnaMark framed className="h-9 w-9" />
         <div>
-          <p className="text-sm font-semibold text-[var(--text-primary)]">Donna</p>
-          <p className="text-[11px] text-[var(--text-secondary)]">Executive assistant</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--text-primary)]">
+            Donna
+          </p>
+          <p className="text-[11px] text-[var(--text-secondary)]">AI Executive Assistant</p>
         </div>
       </Link>
 

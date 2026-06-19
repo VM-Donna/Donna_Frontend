@@ -17,8 +17,8 @@ type CalendarDay = {
 };
 
 const startHour = 7;
-const endHour = 22;
-const rowHeight = 64;
+const endHour = 20;
+const rowHeight = 32;
 const timelineHeight = (endHour - startHour) * rowHeight;
 
 function addDays(date: Date, days: number): Date {
@@ -71,7 +71,7 @@ function getEventPosition(event: CalendarEvent): { top: number; height: number }
   const end = parseTimeToMinutes(event.endTime);
   const dayStart = startHour * 60;
   const top = ((start - dayStart) / 60) * rowHeight;
-  const height = Math.max(((end - start) / 60) * rowHeight, 38);
+  const height = Math.max(((end - start) / 60) * rowHeight, 30);
 
   return {
     top: Math.max(top, 0),
@@ -91,11 +91,23 @@ function getCurrentTimeTop(now: Date): number | null {
   return ((minutes - start) / 60) * rowHeight;
 }
 
+function getHourLabelTop(index: number, labelCount: number): number {
+  if (index === 0) {
+    return 8;
+  }
+
+  if (index === labelCount - 1) {
+    return timelineHeight - 8;
+  }
+
+  return index * rowHeight;
+}
+
 export function ThreeDayCalendar({ baseDate, events }: ThreeDayCalendarProps) {
   const [now, setNow] = useState(() => new Date());
   const days = useMemo<CalendarDay[]>(
     () =>
-      [0, 1, 2].map((offset) => {
+      [0, 1, 2, 3, 4, 5, 6].map((offset) => {
         const date = addDays(baseDate, offset);
         return {
           date,
@@ -111,19 +123,22 @@ export function ThreeDayCalendar({ baseDate, events }: ThreeDayCalendarProps) {
   }, []);
 
   const hourRows = Array.from({ length: endHour - startHour }, (_, index) => startHour + index);
-  const hourLabels = Array.from({ length: endHour - startHour + 1 }, (_, index) => startHour + index);
+  const hourLabels = Array.from(
+    { length: endHour - startHour + 1 },
+    (_, index) => startHour + index
+  );
   const currentTimeTop = getCurrentTimeTop(now);
   const todayKey = formatDateKey(now);
 
   return (
-    <section className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-soft)]">
-      <div className="flex flex-col gap-2 border-b border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-soft)]">
+      <div className="flex flex-col gap-2 border-b border-[var(--border)] px-5 py-2.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)]">
             <CalendarDays aria-hidden="true" className="h-4 w-4" />
             <span>{formatCalendarRange(days)}</span>
           </div>
-          <h2 className="mt-1 text-xl font-semibold text-[var(--text-primary)]">3-Day Calendar</h2>
+          <h2 className="mt-1 text-xl font-semibold text-[var(--text-primary)]">Week Calendar</h2>
         </div>
         <div className="rounded-md border border-[var(--border)] bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
           {events.length} scheduled
@@ -131,38 +146,67 @@ export function ThreeDayCalendar({ baseDate, events }: ThreeDayCalendarProps) {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[760px]">
-          <div className="grid grid-cols-[64px_repeat(3,minmax(0,1fr))] border-b border-[var(--border)] bg-[var(--surface-muted)]">
+        <div className="min-w-[1040px]">
+          <div className="grid grid-cols-[56px_minmax(260px,1.55fr)_repeat(6,minmax(108px,0.68fr))] border-b border-[var(--border)] bg-[var(--surface-muted)]">
             <div />
-            {days.map((day) => (
-              <div key={day.key} className="border-l border-[var(--border)] px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">
-                  {formatDayName(day.date)}
-                </p>
-                <p className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">{formatDayNumber(day.date)}</p>
+            {days.map((day, index) => (
+              <div
+                key={day.key}
+                className="border-l border-[var(--border)] px-3 py-2.5 data-[today=true]:bg-[var(--accent-soft)]"
+                data-today={index === 0}
+              >
+                <div className={index === 0 ? "flex items-end justify-between gap-3" : undefined}>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-normal text-[var(--text-subtle)]">
+                      {index === 0 ? "Today" : formatDayName(day.date)}
+                    </p>
+                    <p
+                      className={
+                        index === 0
+                          ? "mt-1 text-3xl font-semibold text-[var(--accent)]"
+                          : "mt-1 text-xl font-semibold text-[var(--text-primary)]"
+                      }
+                    >
+                      {formatDayNumber(day.date)}
+                    </p>
+                  </div>
+                  {index === 0 ? (
+                    <span className="rounded-full bg-[var(--surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)]">
+                      Focus
+                    </span>
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-[64px_repeat(3,minmax(0,1fr))]">
-            <div className="relative border-r border-[var(--border)] bg-[var(--surface-muted)]" style={{ height: timelineHeight }}>
+          <div className="grid grid-cols-[56px_minmax(260px,1.55fr)_repeat(6,minmax(108px,0.68fr))]">
+            <div
+              className="relative border-r border-[var(--border)] bg-[var(--surface-muted)]"
+              style={{ height: timelineHeight }}
+            >
               {hourLabels.map((hour, index) => (
                 <div
                   key={hour}
-                  className="absolute right-3 -translate-y-1/2 text-[11px] font-medium text-[var(--text-secondary)]"
-                  style={{ top: index * rowHeight }}
+                  className="absolute right-2 -translate-y-1/2 text-[10px] font-medium text-[var(--text-secondary)]"
+                  style={{ top: getHourLabelTop(index, hourLabels.length) }}
                 >
                   {formatHourLabel(hour)}
                 </div>
               ))}
             </div>
 
-            {days.map((day) => {
+            {days.map((day, index) => {
               const dayEvents = events.filter((event) => event.date === day.key);
               const isToday = day.key === todayKey;
 
               return (
-                <div key={day.key} className="relative border-l border-[var(--border)]" style={{ height: timelineHeight }}>
+                <div
+                  key={day.key}
+                  className="relative border-l border-[var(--border)] data-[today=true]:bg-[var(--accent-soft)]/40"
+                  data-today={index === 0}
+                  style={{ height: timelineHeight }}
+                >
                   {hourRows.map((hour) => (
                     <div
                       key={hour}
@@ -187,6 +231,7 @@ export function ThreeDayCalendar({ baseDate, events }: ThreeDayCalendarProps) {
                         event={event}
                         top={position.top}
                         height={position.height}
+                        isCompact={index !== 0}
                         timeRange={`${formatTime(event.startTime)} - ${formatTime(event.endTime)}`}
                       />
                     );

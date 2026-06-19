@@ -3,12 +3,10 @@
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { createMockDashboardData } from "@/data/mockDashboardData";
+import { DashboardFocusPanel } from "./DashboardFocusPanel";
 import { DashboardHeader } from "./DashboardHeader";
-import { EmailSummaryCard } from "./EmailSummaryCard";
 import { FloatingCreateButton } from "./FloatingCreateButton";
-import { HabitsCard } from "./HabitsCard";
 import { ThreeDayCalendar } from "./ThreeDayCalendar";
-import { TodayTasksCard } from "./TodayTasksCard";
 
 type CreateAction = "task" | "habit";
 
@@ -46,14 +44,9 @@ export function DashboardShell() {
           ]}
         />
 
-        <main className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+        <main className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
           <ThreeDayCalendar baseDate={today} events={dashboardData.events} />
-
-          <aside className="space-y-5">
-            <TodayTasksCard tasks={dashboardData.tasks} />
-            <EmailSummaryCard emails={dashboardData.emails} />
-            <HabitsCard habits={dashboardData.habits} />
-          </aside>
+          <DashboardFocusPanel data={dashboardData} />
         </main>
       </div>
 

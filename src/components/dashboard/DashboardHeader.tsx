@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarCheck2, CheckCircle2, Mail, Moon, Sparkles, Sun } from "lucide-react";
+import { CalendarCheck2, CheckCircle2, Mail, Moon, Sun } from "lucide-react";
+import { DonnaLogo } from "@/components/brand/DonnaLogo";
 import { useThemeSettings } from "@/theme/ThemeProvider";
 
 type DashboardHeaderProps = {
@@ -45,22 +46,18 @@ export function DashboardHeader({ now, stats }: DashboardHeaderProps) {
         <div className="grid gap-5 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_520px] xl:items-center">
           <div className="min-w-0">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent)] text-[var(--accent-contrast)] shadow-sm shadow-[var(--accent-ring)]">
-                  <Sparkles aria-hidden="true" className="h-5 w-5" />
-                </div>
-                <div className="min-w-0">
+              <div className="min-w-0">
+                <DonnaLogo
+                  className="items-center gap-4"
+                  markClassName="h-20 w-20 sm:h-24 sm:w-24"
+                />
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <p className="text-sm font-medium text-[var(--text-secondary)]">
                     {formatDisplayDate(now)}
                   </p>
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-4xl">
-                      Donna
-                    </h1>
-                    <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--accent)]">
-                      Executive OS
-                    </span>
-                  </div>
+                  <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--accent)]">
+                    Executive OS
+                  </span>
                 </div>
               </div>
 
